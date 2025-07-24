@@ -1,43 +1,29 @@
-let certData = null;
-
-const fileInput = document.getElementById("fileInput");
-const verifyButton = document.getElementById("verifyButton");
-const output = document.getElementById("output");
-
-fileInput.addEventListener("change", async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    try {
-        const content = await file.text();
-        certData = JSON.parse(content);
-        output.textContent = "Ready to verify.";
-        verifyButton.disabled = false;
-    } catch {
-        output.textContent = "Invalid JSON file.";
-        certData = null;
-        verifyButton.disabled = true;
-    }
-});
-
-verifyButton.addEventListener("click", async () => {
+document.getElementById("verifyButton").addEventListener("click", async () => {
     if (!certData) return;
 
-    output.textContent = "Verifying…";
-    verifyButton.disabled = true;
+    document.getElementById("rawOutput").textContent = "Verifying…";
+    document.getElementById("parsedOutput").textContent = "";
 
     try {
         const res = await fetch("https://validity.crashdebug.dev/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(certData)
+            body: JSON.stringify(certData),
         });
 
-        const result = await res.json();
-        output.textContent = JSON.stringify(result, null, 2);
-    } catch (err) {
-        output.textContent = `Error: ${err}`;
-    }
+        const text = await res.text();
+        document.getElementById("rawOutput").textContent = text;
 
-    verifyButton.disabled = false;
+        try {
+            const parsed = JSON.parse(text);
+            document.getElementById("parsedOutput").innerHTML = Object.entries(parsed)
+                .map(([k, v]) => `<div><strong>${k}:</strong> ${v}</div>`)
+                .join("");
+        } catch {
+            document.getElementById("parsedOutput").textContent = "Invalid JSON response.";
+        }
+
+    } catch (err) {
+        document.getElementById("rawOutput").textContent = `Error: ${err}`;
+    }
 });
