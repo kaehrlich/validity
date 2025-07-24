@@ -1,7 +1,17 @@
-import { defineEventHandler, readBody } from 'h3'
+import { defineEventHandler, getMethod, readBody, setHeader, send } from 'h3'
 import crypto from 'crypto'
 
 export default defineEventHandler(async (event) => {
+  // Set CORS headers for all requests
+  setHeader(event, 'Access-Control-Allow-Origin', '*')
+  setHeader(event, 'Access-Control-Allow-Methods', 'POST, OPTIONS')
+  setHeader(event, 'Access-Control-Allow-Headers', 'Content-Type')
+
+  // Handle preflight OPTIONS request
+  if (getMethod(event) === 'OPTIONS') {
+    return send(event, null, 204)
+  }
+
   const body = await readBody(event)
 
   // Check required parameters
@@ -10,14 +20,14 @@ export default defineEventHandler(async (event) => {
 
   if (!meta || typeof meta !== 'object') {
     return {
-      error: "MP_meta",
+      error: 'MP_meta',
       code: 400,
     }
   }
 
   if (!validate || typeof validate !== 'string') {
     return {
-      error: "MP_validate",
+      error: 'MP_validate',
       code: 400,
     }
   }
@@ -26,7 +36,7 @@ export default defineEventHandler(async (event) => {
 
   if (!issue_date || !expire_date || !validation_server || !assembly_server) {
     return {
-      error: "MMF",
+      error: 'MMF',
       code: 400,
     }
   }
@@ -37,14 +47,14 @@ export default defineEventHandler(async (event) => {
 
   if (isNaN(expiry)) {
     return {
-      error: "DT_IF",
+      error: 'DT_IF',
       code: 400,
     }
   }
 
   if (now > expiry) {
     return {
-      error: "CT_EX",
+      error: 'CT_EX',
       code: 401,
     }
   }
@@ -52,24 +62,26 @@ export default defineEventHandler(async (event) => {
   // Generate SHA256 of the canonical JSON string
   const hash = crypto
       .createHash('sha256')
-      .update(JSON.stringify({
-        issue_date,
-        expire_date,
-        validation_server,
-        assembly_server
-      }))
+      .update(
+          JSON.stringify({
+            issue_date,
+            expire_date,
+            validation_server,
+            assembly_server,
+          })
+      )
       .digest('hex')
 
   if (hash !== validate) {
     return {
-      error: "CT_MH",
+      error: 'CT_MH',
       code: 402,
     }
   }
 
   // Success
   return {
-    status: "CT_VALID",
+    status: 'CT_VALID',
     expires: expire_date,
     code: 200,
   }
