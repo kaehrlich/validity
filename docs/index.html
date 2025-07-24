@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Certificate Validator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="app">
+<main id="app">
     <h1>Certificate Validator</h1>
-    <input type="file" id="fileInput" accept=".json" />
+
+    <label class="file-picker">
+        <input type="file" id="fileInput" accept=".json" />
+        <span>Select Certificate (.json)</span>
+    </label>
+
     <button id="verifyButton" disabled>Verify Certificate</button>
+
     <pre id="output">Drop a certificate file to begin.</pre>
-</div>
+</main>
+
 <script src="script.js"></script>
 </body>
 </html>
