@@ -2,39 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Certificate Validator</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="container">
-
-    <!-- Block 1: Upload + Validate -->
-    <div class="block">
-        <div class="flex-row">
-            <div>
-                <label for="fileInput" class="label">File Upload</label><br />
-                <input type="file" id="fileInput" accept=".json" />
-            </div>
-            <div class="right">
-                <label class="label invisible">Validate</label><br />
-                <button id="verifyButton" disabled>Validate</button>
-            </div>
+<div id="app">
+    <div class="row">
+        <div class="card">
+            <h2>File Upload</h2>
+            <input type="file" id="fileInput" accept=".json" />
+        </div>
+        <div class="card">
+            <h2>Validate</h2>
+            <button id="verifyButton" disabled>Verify Certificate</button>
         </div>
     </div>
 
-    <!-- Block 2: Raw Response -->
-    <div class="block">
-        <div class="label">Raw Response</div>
-        <pre id="rawOutput" class="pre">Awaiting validation…</pre>
+    <div class="card">
+        <h2>Raw Response</h2>
+        <pre id="rawOutput">No certificate verified yet.</pre>
     </div>
 
-    <!-- Block 3: Parsed Output -->
-    <div class="block">
-        <div class="label">Parsed Response</div>
+    <div class="card">
+        <h2>Parsed Response</h2>
         <div id="parsedOutput" class="parsed"></div>
     </div>
-
 </div>
 
 <script src="script.js"></script>
