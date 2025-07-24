@@ -1,3 +1,5 @@
+[Quickly Test Certificate](https://kaehrlich.github.io/validity/)
+
 # Nitro
 
 This directory is a brief example of [Nitro](https://nitro.build/) that can be deployed to Vercel with zero configuration. Go to the [nitro quick start](https://nitro.unjs.io/guide#quick-start) to learn more.
